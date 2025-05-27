@@ -1,27 +1,42 @@
 {
   "expo": {
-    "name": "my-expo-app",
-    "slug": "my-expo-app",
+    "name": "Bless Tag",
+    "slug": "blessed-tag",
     "version": "1.0.0",
-
-    "scheme": "my-expo-app",
+    "scheme": "blessed-tag",
+    "icon": "./assets/app-icon.png",
     "web": {
       "bundler": "metro",
       "output": "static",
       "favicon": "./assets/favicon.png"
     },
-    "plugins": ["expo-router"],
+    "plugins": [
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#ffffff",
+          "image": "./assets/onboarding.png",
+          "imageWidth": 200
+        }
+      ],
+      ["expo-router"],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow Bless Tag to access your camera to join squad by scanning a qr code."
+        }
+      ],
+      ["expo-apple-authentication"],
+      "expo-sqlite",
+      "expo-font"
+    ],
     "experiments": {
       "typedRoutes": true,
-
       "tsconfigPaths": true
     },
-
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
 
     "userInterfaceStyle": "light",
-
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -29,12 +44,26 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "usesAppleSignIn": true,
+      "supportsTablet": true,
+      "bundleIdentifier": "com.sahag98.blessedtag",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
+      },
+      "package": "com.sahag98.blessedtag"
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "09e8f782-ed47-40e4-ac0f-90e85d3ca7fc"
       }
     }
   }

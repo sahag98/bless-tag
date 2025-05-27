@@ -1,3 +1,26 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #292929;
+  --card: #dcdcdc;
+  --cardborder: #d5d5d5;
+  --primary: #ffac27;
+  --secondary: #292929;
+  --input: #e5e7eb;
+  --input-placeholder: #4b5563;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #121212;
+    --foreground: #ffffff;
+    --card: #212121;
+    --cardborder: #575757;
+    --secondary: #87ceeb;
+    --input: #545454;
+    --input-placeholder: #dcdcdc;
+  }
+}
