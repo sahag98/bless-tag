@@ -1,8 +1,9 @@
-import { Share, StyleSheet, Text, View } from 'react-native';
+import { Platform, Pressable, Share, StyleSheet, Text, View } from 'react-native';
 import React from 'react';
 import { Container } from '~/components/Container';
 import QRCode from 'react-native-qrcode-svg';
-import { useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
+import { AntDesign } from '@expo/vector-icons';
 
 const SquadInvite = () => {
   const { id, code } = useLocalSearchParams();
@@ -18,11 +19,19 @@ const SquadInvite = () => {
   }
   return (
     <Container>
+      {Platform.OS === 'android' && (
+        <Pressable
+          onPress={() => {
+            router.back();
+          }}>
+          <AntDesign name="caretleft" size={24} color={'black'} />
+        </Pressable>
+      )}
       <View className="flex-1 items-center justify-between gap-12 pt-10">
         <Text className="font-fredoka-semibold text-3xl">Invite your homies</Text>
         <View className="items-center gap-5">
           <Text className="font-nunito-bold text-2xl">Scan QR Code</Text>
-          <View className="rounded-2xl bg-primary p-3">
+          <View className="rounded-2xl border bg-primary p-3">
             <QRCode
               backgroundColor="#ffac27"
               color="black"
@@ -33,7 +42,7 @@ const SquadInvite = () => {
         </View>
         <View className="h-0.5 w-full items-center justify-center bg-card">
           <View className="absolute z-10 self-center bg-background px-5">
-            <Text className=" font-nunito-medium text-xl text-stone-400">or</Text>
+            <Text className=" font-nunito-medium text-xl text-foreground">or</Text>
           </View>
         </View>
 
@@ -41,7 +50,7 @@ const SquadInvite = () => {
           Share Squad Code
         </Text>
         <Text className="font-nunito-medium text-lg text-foreground">
-          ⚠️ Only share this with people you trust. Anyone with the code can join your squad.
+          ⚠️ Only share this with people you trust. Anyone with this code can join your squad.
         </Text>
       </View>
     </Container>

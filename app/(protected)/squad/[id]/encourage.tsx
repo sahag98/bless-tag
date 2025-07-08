@@ -9,6 +9,7 @@ import { AntDesign, Feather } from '@expo/vector-icons';
 import { useAuth } from '~/providers/auth-provider';
 import { useUserStore } from '../../../../store/store';
 import axios from 'axios';
+import { checkReview } from '~/utils/requestReview';
 
 const SendEncourageScreen = () => {
   const { colorScheme } = useTheme();
@@ -30,7 +31,7 @@ const SendEncourageScreen = () => {
     squad,
   } = useAuth();
   const [message, setMessage] = useState('');
-  const { fetchSquads } = useUserStore();
+  const { reviewRequested, setReviewRequested } = useUserStore();
 
   async function SendEcouragement() {
     try {
@@ -42,7 +43,7 @@ const SendEncourageScreen = () => {
         .eq('pass_id', receiverId)
         .eq('user_id', currentUser?.id!)
         .select();
-      if (blessedMember && blessedMember.receiver.noti_token) {
+      if (blessedMember && blessedMember.receiver.noti_token && data) {
         const message = {
           to: blessedMember?.receiver.noti_token,
           sound: 'default',
@@ -90,6 +91,8 @@ const SendEncourageScreen = () => {
           .single();
         console.log('pass insert error: ', error);
         console.log('pass insert data: ', data);
+
+        //@ts-ignore
         setBlessedMember(data);
       }
 
@@ -113,6 +116,11 @@ const SendEncourageScreen = () => {
       }
     } catch (err) {
       console.error('Unexpected error in SendPrayer:', err);
+    } finally {
+      if (!reviewRequested) {
+        checkReview();
+        setReviewRequested(true);
+      }
     }
   }
 

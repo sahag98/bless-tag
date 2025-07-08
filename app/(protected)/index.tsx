@@ -12,10 +12,15 @@ import { useUserStore } from '~/store/store';
 import { supabase } from '~/utils/supabase';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { registerForPushNotificationsAsync } from '~/utils/registerNotification';
+import UpdateModal from '~/modals/update-modal';
+import { checkReview, CheckReview } from '~/utils/requestReview';
 
 export default function Home() {
   const { currentUser, getUserSquads, getSquadMembers, userSquads } = useAuth();
-  const { fetchSquads, squads } = useUserStore();
+  const { fetchSquads, squads, reviewRequested, setReviewRequested, squadsCreated } =
+    useUserStore();
+  console.log('squads created: ', squadsCreated);
+  console.log('review requested: ', reviewRequested);
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
   const handlePresentModalPress = useCallback(() => {
@@ -33,7 +38,9 @@ export default function Home() {
       if (!currentUser) return;
       const token = await registerForPushNotificationsAsync();
 
-      if (currentUser.noti_token !== token) {
+      if (!token) return;
+
+      if (currentUser.noti_token !== token || currentUser.noti_token === null) {
         console.log('UPDATE TOKEN');
         const { error } = await supabase
           .from('profiles')
@@ -92,21 +99,34 @@ export default function Home() {
   return (
     // <Container>
     <View className="flex-1 bg-background">
+      <UpdateModal />
       <SafeAreaView
         edges={['top']}
-        className="justify-end gap-10 rounded-bl-3xl rounded-br-3xl bg-card p-5 sm:p-20">
-        <View className="flex-row items-center justify-between">
+        className="border-border justify-end gap-4 rounded-bl-3xl rounded-br-3xl border bg-card p-5 sm:p-20">
+        <View className="w-full flex-row items-center justify-between">
           <View className="gap-1">
-            <Text className="font-fredoka-semibold text-3xl">Hey there 👋</Text>
+            <Text onPress={() => router.push('/test')} className="font-fredoka-semibold text-3xl">
+              Hey there 👋
+            </Text>
             <Text className="font-nunito-medium text-2xl">{currentUser?.username}</Text>
           </View>
 
           <Pressable onPress={() => router.push('/profile')}>
-            <Image
-              className="rounded-2xl"
-              source={{ uri: currentUser.avatar_url! }}
-              style={{ width: 60, height: 60 }}
-            />
+            {currentUser?.avatar_url ? (
+              <Image
+                className="rounded-2xl border"
+                source={{ uri: currentUser.avatar_url! }}
+                style={{ width: 60, height: 60 }}
+              />
+            ) : (
+              <View className="h-[60px] w-[60px] items-center justify-center rounded-full border border-cardborder bg-background ">
+                <Text className="font-nunito-semibold text-2xl uppercase text-foreground">
+                  {currentUser?.username?.charAt(0)}
+                  {currentUser?.username?.charAt(1)}
+                </Text>
+              </View>
+            )}
+            <Image />
           </Pressable>
         </View>
         <Text className="font-nunito-medium">
@@ -114,7 +134,7 @@ export default function Home() {
         </Text>
         <Pressable
           onPress={() => Linking.openURL('https://prayse.canny.io/blesstag-feedback/create')}
-          className="w-full items-center justify-center gap-4 rounded-xl  bg-background p-3">
+          className="w-full items-center justify-center gap-4 rounded-xl border  bg-background p-3">
           <Text className="font-fredoka-medium text-lg">Submit Feedback</Text>
         </Pressable>
       </SafeAreaView>
@@ -129,7 +149,7 @@ export default function Home() {
             </Pressable> */}
             <Pressable
               onPress={handlePresentModalPress}
-              className="size-16 items-center justify-center rounded-2xl bg-primary">
+              className=" size-16 items-center justify-center rounded-2xl border bg-primary">
               <Entypo name="plus" size={30} color="black" />
             </Pressable>
           </View>

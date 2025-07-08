@@ -20,13 +20,13 @@ import { useUserStore } from '~/store/store';
 import Feather from '@expo/vector-icons/Feather';
 import { Image } from 'expo-image';
 import { useTheme } from '~/providers/theme-provider';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const blurhash = 'L1QvwR-;fQ-;~qfQfQfQfQfQfQfQ';
 
 const ProfilePage = () => {
   const { colorScheme } = useTheme();
-
+  const insets = useSafeAreaInsets();
   const { currentUser, setCurrentUser } = useAuth();
 
   async function deleteAccount() {
@@ -40,14 +40,20 @@ const ProfilePage = () => {
   }
 
   return (
-    <View className="flex-1 p-4">
+    <View
+      style={{ paddingTop: Platform.OS === 'android' ? insets.top : 15 }}
+      className="flex-1 p-4">
       <View className="h-full w-full flex-1 gap-5">
         {Platform.OS === 'android' && (
           <Pressable
             onPress={() => {
               router.back();
             }}>
-            <AntDesign name="left" size={24} color={colorScheme === 'dark' ? 'white' : 'black'} />
+            <AntDesign
+              name="caretleft"
+              size={24}
+              color={colorScheme === 'dark' ? 'white' : 'black'}
+            />
           </Pressable>
         )}
 
@@ -80,7 +86,7 @@ const ProfilePage = () => {
         </View>
         <Pressable
           onPress={() => router.push('/(protected)/edit-profile')}
-          className="w-full flex-row items-center justify-between rounded-xl bg-primary p-4">
+          className="w-full flex-row items-center justify-between rounded-xl border bg-primary p-4">
           <Text className="font-nunito-bold text-lg text-foreground">Edit Profile</Text>
           <MaterialCommunityIcons name="account-edit-outline" size={24} color="black" />
         </Pressable>
@@ -92,7 +98,7 @@ const ProfilePage = () => {
               setCurrentUser(null);
               // router.push('/(auth)');
             }}
-            className="w-full items-center justify-center rounded-xl bg-red-100 p-4 dark:bg-red-950">
+            className="w-full items-center justify-center rounded-xl border border-red-300 bg-red-100 p-4 dark:bg-red-950">
             <Text className="font-nunito-semibold text-base text-red-600 dark:text-foreground">
               Sign out
             </Text>
@@ -108,7 +114,7 @@ const ProfilePage = () => {
                 { text: 'Delete', style: 'destructive', onPress: deleteAccount },
               ])
             }
-            className=" w-full items-center justify-center rounded-xl bg-card p-4">
+            className=" w-full items-center justify-center rounded-xl border border-stone-400 bg-card p-4">
             <Text className="font-nunito-semibold text-base text-foreground">Delete account</Text>
           </Pressable>
           <Text className="mt-5 text-center font-nunito-medium text-foreground">v.1.0.0</Text>

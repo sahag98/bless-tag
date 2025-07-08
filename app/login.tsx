@@ -19,8 +19,7 @@ const LoginScreen = () => {
           AppleAuthentication.AppleAuthenticationScope.EMAIL,
         ],
       });
-      // signed in
-      // console.log('creden')
+
       if (credential.identityToken) {
         const {
           error,
@@ -30,15 +29,18 @@ const LoginScreen = () => {
           token: credential.identityToken,
         });
 
+        console.log('apple user: ', user);
         console.log('apple error: ', error);
 
-        console.log('HEREE');
+        if (user) {
+          // Wait for the user profile to be fetched and set
+          const { data: profiles } = await supabase.from('profiles').select('*').eq('id', user.id);
 
-        if (!error) {
-          console.log('Signed in!');
-          router.replace('/');
-          // router.push('/(app)/(tabs)');
-          //   router.push(COMMUNITY_SCREEN);
+          if (profiles && profiles[0]) {
+            setCurrentUser(profiles[0]);
+            // Use router.replace instead of push to prevent back navigation
+            router.replace('/(protected)');
+          }
         }
       } else {
         throw new Error('No identityToken.');
@@ -124,18 +126,12 @@ const LoginScreen = () => {
       <View className="flex-1 items-center justify-between rounded-tl-3xl rounded-tr-3xl bg-secondary px-4 py-12">
         <View className="flex-row items-center gap-4">
           <Text className="font-fredoka-semibold text-4xl text-background">Bless Tag</Text>
-          <View className="rounded-full bg-[#969696] px-2 py-1">
-            <Text className="font-nunito-semibold">BETA</Text>
-          </View>
         </View>
         <Text className="font-nunito-medium text-xl text-background">
           You were made to be a light. In this game, every tag is a chance to lift someone up, share
-          God’s love, and make a difference—one blessing at a time.
+          God's love, and make a difference—one blessing at a time.
         </Text>
-        <Text className="font-nunito-medium text-lg text-primary">
-          Please use the feedback feature to report any bugs, errors, and suggestions you might
-          have!
-        </Text>
+
         <View className="w-full gap-4">
           <PrimaryButton onPress={onSignInWithGoogle} title="Continue with Google" />
           <PrimaryButton onPress={onSignInWithApple} title="Continue with Apple" />

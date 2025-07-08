@@ -247,14 +247,14 @@ export default function OnboaardingScreen() {
                         <Image
                           source={{ uri: profileImg }}
                           accessibilityLabel="Avatar"
-                          className="mb-5 size-40 self-center rounded-3xl "
+                          className="mb-5 size-40 self-center rounded-3xl border "
                           //   style={{ width: 40, height: 40 }}
                         />
                       </Pressable>
                     ) : (
                       <Pressable
                         onPress={uploadAvatar}
-                        className="mb-5 size-40 items-center justify-center gap-3 self-center rounded-3xl border border-cardborder bg-card p-2">
+                        className="mb-5 size-40 items-center justify-center gap-3 self-center rounded-3xl border bg-card p-2">
                         {uploading ? (
                           <ActivityIndicator />
                         ) : (
@@ -287,7 +287,7 @@ export default function OnboaardingScreen() {
                     </View>
                     <Pressable
                       disabled={!username || username.length <= 2}
-                      className="disabled:bg-light-primary/50 items-center justify-center rounded-xl bg-primary p-4"
+                      className="disabled:bg-light-primary/50 items-center justify-center rounded-xl border bg-primary p-4"
                       onPress={updateProfile}>
                       <Text className="font-nunito-bold text-lg">Get Started 🤝</Text>
                     </Pressable>

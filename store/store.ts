@@ -13,8 +13,15 @@ export interface AppState {
   setSelectedEmoji: (data: string) => void;
   squads: Members[];
   fetchSquads: (userId: string) => Promise<void>;
-
   deleteSquad: (userId: string, adminId: string, squadId: string) => void;
+
+  // New review tracking properties
+  squadsCreated: number;
+  squadsJoined: number;
+  reviewRequested: boolean;
+  incrementSquadsCreated: () => void;
+  incrementSquadsJoined: () => void;
+  setReviewRequested: (requested: boolean) => void;
 }
 
 export const useUserStore = create(
@@ -64,6 +71,20 @@ export const useUserStore = create(
         set((state) => ({
           squads: state.squads.filter((squad) => squad.squad_id !== Number(squadId)),
         }));
+      },
+
+      // New review tracking state and methods
+      squadsCreated: 0,
+      squadsJoined: 0,
+      reviewRequested: false,
+      incrementSquadsCreated: () => {
+        set((state) => ({ squadsCreated: state.squadsCreated + 1 }));
+      },
+      incrementSquadsJoined: () => {
+        set((state) => ({ squadsJoined: state.squadsJoined + 1 }));
+      },
+      setReviewRequested: (requested: boolean) => {
+        set({ reviewRequested: requested });
       },
     }),
     {

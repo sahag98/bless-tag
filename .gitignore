@@ -2,10 +2,12 @@ node_modules/
 .expo/
 dist/
 npm-debug.*
-*.jks
+# *.jks
 *.p8
 *.p12
 *.key
+*.jks
+*.pem
 *.mobileprovision
 *.orig.*
 web-build/
@@ -16,11 +18,15 @@ expo-env.d.ts
 .env
 eas.json
 app.json
+blessed-tag-service.json
+google-services.json
+credentials.json
+bless-tag-firebase-admin.json
 ios
 android
 
 # macOS
 .DS_Store
 
-# Temporary files created by Metro to check the health of the file watcher
+# Temporary files created by Metro to check thex health of the file watcher
 .metro-health-check*

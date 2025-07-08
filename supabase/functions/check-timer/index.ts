@@ -4,7 +4,7 @@
 
 // Setup type definitions for built-in Supabase Runtime APIs
 import 'jsr:@supabase/functions-js/edge-runtime.d.ts';
-import { createClient } from 'jsr:@supabase/supabase-js@2';
+import { createClient } from 'jsr:@supabase/supabase-js@2.49.8';
 console.log('Hello from Functions!');
 
 Deno.serve(async (req) => {

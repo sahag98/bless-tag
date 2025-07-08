@@ -10,6 +10,8 @@ import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { supabase } from '~/utils/supabase';
 import { useAuth } from '~/providers/auth-provider';
 import axios from 'axios';
+import { checkReview } from '~/utils/requestReview';
+import { useUserStore } from '~/store/store';
 
 const ChapterIndex = () => {
   const {
@@ -43,6 +45,8 @@ const ChapterIndex = () => {
     getSquadMembers,
     squad,
   } = useAuth();
+
+  const { reviewRequested, setReviewRequested } = useUserStore();
 
   const chapters = bibleData.books.find((book) => book.name === bookName)?.chapters;
 
@@ -152,6 +156,11 @@ const ChapterIndex = () => {
       }
     } catch (err) {
       console.error('Unexpected error in SendPrayer:', err);
+    } finally {
+      if (!reviewRequested) {
+        checkReview();
+        setReviewRequested(true);
+      }
     }
 
     // Clear selection after copying

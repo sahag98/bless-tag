@@ -16,6 +16,7 @@ import { useTheme } from '~/providers/theme-provider';
 import { Link, router } from 'expo-router';
 import { useUserStore } from '~/store/store';
 import { emojies } from '~/constants/Emojis';
+import * as StoreReview from 'expo-store-review';
 
 const InputComponent = ({ value, setValue }: { value: string; setValue: any }) => {
   const [title, setTitle] = useState('');
@@ -43,11 +44,19 @@ const CreateCircleModal = ({
 
   const [circleName, setCircleName] = useState('');
   const [circleDescription, setcircleDescription] = useState('');
-  const { selectedEmoji, setSelectedEmoji, fetchSquads } = useUserStore();
+  const {
+    selectedEmoji,
+    setSelectedEmoji,
+    fetchSquads,
+    squadsJoined,
+    incrementSquadsJoined,
+    reviewRequested,
+    setReviewRequested,
+  } = useUserStore();
   const [circleCode, setCircleCode] = useState<any | null>();
   const [activeTab, setActiveTab] = useState('create');
 
-  const snapPoints = useMemo(() => ['50%', '75%'], []);
+  const snapPoints = useMemo(() => ['75%', '90%'], []);
   // callbacks
 
   const handleSheetChanges = useCallback((index: number) => {
@@ -90,6 +99,15 @@ const CreateCircleModal = ({
     } catch (error) {
       console.log('something went wrong: ', error);
     } finally {
+      // Increment squads joined count
+      // incrementSquadsJoined();
+
+      // // Request review after 2nd squad join (when squadsJoined becomes 2)
+      // if (squadsJoined === 1 && !reviewRequested && (await StoreReview.isAvailableAsync())) {
+      //   await StoreReview.requestReview();
+      //   setReviewRequested(true);
+      // }
+
       // fetchStudies(currentUser?.id!);
       // getUserGroups();
       bottomSheetModalRef.current?.dismiss();
@@ -111,6 +129,7 @@ const CreateCircleModal = ({
         handleStyle={{
           backgroundColor: colorScheme === 'dark' ? '#212121' : 'white',
         }}
+        keyboardBehavior="extend"
         snapPoints={snapPoints}
         index={2}
         onChange={handleSheetChanges}>
@@ -124,7 +143,7 @@ const CreateCircleModal = ({
           <View className="gap-10">
             <Pressable
               onPress={() => router.push('/(protected)/create')}
-              className=" w-full items-center justify-center rounded-xl bg-primary p-4">
+              className=" w-full items-center justify-center rounded-xl border bg-primary p-4">
               <Text className="font-nunito-bold text-xl text-foreground">Create new squad</Text>
             </Pressable>
             <View className="h-0.5 w-full items-center justify-center bg-card">
@@ -134,7 +153,7 @@ const CreateCircleModal = ({
             </View>
             <View className="gap-3">
               <BottomSheetTextInput
-                defaultValue={circleCode}
+                value={circleCode}
                 onChangeText={setCircleCode}
                 placeholder="Enter squad code"
                 keyboardType="numeric"
@@ -148,8 +167,8 @@ const CreateCircleModal = ({
                 onPress={joinSquad}
                 className={
                   !circleCode
-                    ? 'mt-1 items-center justify-center rounded-2xl bg-primary p-4 opacity-40'
-                    : 'mt-1 items-center justify-center rounded-2xl bg-primary p-4'
+                    ? 'mt-1 items-center justify-center rounded-2xl border border-primary bg-primary p-4 opacity-40'
+                    : 'mt-1 items-center justify-center rounded-2xl border bg-primary p-4'
                 }>
                 <Text className="font-nunito-bold text-lg sm:text-xl">Join squad</Text>
               </Pressable>

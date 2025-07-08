@@ -223,7 +223,7 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "circles_admin_id_fkey"
+            foreignKeyName: "squads_admin_id_fkey"
             columns: ["admin_id"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -244,6 +244,24 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      update: {
+        Row: {
+          created_at: string
+          id: number
+          version_num: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          version_num?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          version_num?: string | null
+        }
+        Relationships: []
       }
     }
     Views: {

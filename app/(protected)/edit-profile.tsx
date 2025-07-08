@@ -21,7 +21,7 @@ import { useUserStore } from '~/store/store';
 import Feather from '@expo/vector-icons/Feather';
 import { Image } from 'expo-image';
 import { useTheme } from '~/providers/theme-provider';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as ImageManipulator from 'expo-image-manipulator';
 
 const blurhash = 'L1QvwR-;fQ-;~qfQfQfQfQfQfQfQ';
@@ -33,6 +33,8 @@ const EditProfile = () => {
   const { currentUser, setCurrentUser } = useAuth();
   const [newUsername, setNewUsername] = useState(currentUser?.username);
   const [img, setImg] = useState<ImagePicker.ImagePickerAsset>();
+
+  const insets = useSafeAreaInsets();
 
   async function updateUser() {
     if (profileImg) {
@@ -137,7 +139,7 @@ const EditProfile = () => {
   }
 
   return (
-    <View className="flex-1 p-4">
+    <View style={{ paddingTop: Platform.OS === 'android' ? insets.top : 15 }} className="flex-1">
       <View className="h-full w-full flex-1 gap-3">
         {Platform.OS === 'android' && (
           <Pressable
@@ -152,7 +154,7 @@ const EditProfile = () => {
             className="absolute right-3 top-3"
             onPress={updateUser}
             name="check"
-            size={24}
+            size={30}
             color={colorScheme === 'dark' ? 'white' : 'black'}
           />
         )}
@@ -164,7 +166,7 @@ const EditProfile = () => {
                   width: '100%',
                   aspectRatio: 1 / 1,
                   borderWidth: 1,
-                  borderColor: colorScheme === 'dark' ? '#575757' : '#d5d5d5',
+                  borderColor: colorScheme === 'dark' ? '#575757' : '#575757',
                   borderRadius: 100,
                 }}
                 className="rounded-full"
@@ -175,7 +177,7 @@ const EditProfile = () => {
               />
               <Pressable
                 onPress={uploadAvatar}
-                className="absolute -bottom-2 -right-2 size-10 items-center justify-center rounded-full bg-primary">
+                className="absolute -bottom-2 -right-2 size-10 items-center justify-center rounded-full border bg-primary">
                 <Entypo name="plus" size={24} color="black" />
               </Pressable>
             </View>

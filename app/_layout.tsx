@@ -7,7 +7,10 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-
+import { View, ActivityIndicator } from 'react-native';
+import { useFonts, Nunito_400Regular } from '@expo-google-fonts/nunito';
+import * as Font from 'expo-font';
+// import { vexo } from 'vexo-analytics';
 const queryClient = new QueryClient();
 
 SplashScreen.preventAutoHideAsync();
@@ -16,15 +19,16 @@ SplashScreen.setOptions({
   duration: 500,
   fade: true,
 });
+
+// if (!__DEV__) {
+//   vexo(process.env.EXPO_PUBLIC_VEXO_API_KEY!);
+// }
 export default function RootLayout() {
   const [appIsReady, setAppIsReady] = useState(false);
   useEffect(() => {
     async function prepare() {
       try {
-        // Pre-load fonts, make any API calls you need to do here
-
-        // Artificially delay for two seconds to simulate a slow loading
-        // experience. Remove this if you copy and paste the code!
+        // Artificial delay for loading experience
         await new Promise((resolve) => setTimeout(resolve, 500));
       } catch (e) {
         console.warn(e);
@@ -39,7 +43,11 @@ export default function RootLayout() {
   }, []);
 
   if (!appIsReady) {
-    return null;
+    return (
+      <View className="flex-1 items-center justify-center bg-background">
+        <ActivityIndicator className="text-primary" size="large" />
+      </View>
+    );
   }
   return (
     <>

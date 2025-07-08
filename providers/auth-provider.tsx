@@ -2,7 +2,7 @@ import { Session, User } from '@supabase/supabase-js';
 import { canGoBack } from 'expo-router/build/global-state/routing';
 
 import { createContext, useContext, useEffect, useState } from 'react';
-import { ActivityIndicator } from 'react-native';
+import { ActivityIndicator, View } from 'react-native';
 import { Database, Tables } from '~/database.types';
 import { useUserStore } from '~/store/store';
 import { BlessedMember, Blessings, Consquences, ExtendedSquad, Members } from '~/types/types';
@@ -187,7 +187,6 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     supabase.auth.getSession().then(({ data: { session } }) => {
       const user = session?.user;
       if (user) {
-        console.log('user: ', user);
         getUser(user);
       } else {
         console.log('no user');
@@ -210,7 +209,11 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
   }, []);
 
   if (!isReady) {
-    return;
+    return (
+      <View className="flex-1 items-center justify-center bg-background">
+        <ActivityIndicator className="text-primary" size="large" />
+      </View>
+    );
   }
 
   return (

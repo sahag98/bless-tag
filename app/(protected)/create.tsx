@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { BarcodeScanningResult, CameraView, useCameraPermissions } from 'expo-camera';
 import { Link, router, useRouter } from 'expo-router';
-import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { Container } from '~/components/Container';
 import { useUserStore } from '~/store/store';
 import { emojies } from '~/constants/Emojis';
@@ -9,14 +9,27 @@ import { useTheme } from '~/providers/theme-provider';
 import { Feather } from '@expo/vector-icons';
 import { useAuth } from '~/providers/auth-provider';
 import { supabase } from '~/utils/supabase';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import * as StoreReview from 'expo-store-review';
 
 export default function CreateSquad() {
   const [circleName, setCircleName] = useState('');
   const [circleDescription, setcircleDescription] = useState('');
-  const { selectedEmoji, setSelectedEmoji, fetchSquads } = useUserStore();
+  const {
+    selectedEmoji,
+    setSelectedEmoji,
+    fetchSquads,
+    squadsCreated,
+    incrementSquadsCreated,
+    reviewRequested,
+    setReviewRequested,
+  } = useUserStore();
   const { currentUser } = useAuth();
   const [circleCode, setCircleCode] = useState<any | null>();
   const { colorScheme } = useTheme();
+
+  const insets = useSafeAreaInsets();
   useEffect(() => {
     setSelectedEmoji(emojies[Math.floor(Math.random() * emojies.length)]);
 
@@ -75,12 +88,26 @@ export default function CreateSquad() {
     } catch (error) {
       console.log(error);
     } finally {
+      // Increment squads created count
+      incrementSquadsCreated();
+
+      // if (squadsCreated === 1 && !reviewRequested) {
+      //   console.log('is available not working');
+      // }
+
+      // // Request review after 2nd squad creation (when squadsCreated becomes 2)
+      // if (squadsCreated === 1 && !reviewRequested && (await StoreReview.isAvailableAsync())) {
+      //   console.log('should show review!!!');
+      //   await StoreReview.requestReview();
+      //   setReviewRequested(true);
+      // }
+
       fetchSquads(currentUser?.id!);
       router.replace('/');
     }
   }
   return (
-    <View className="p-4">
+    <View style={{ paddingTop: Platform.OS === 'android' ? insets.top : 15 }} className="p-4">
       <View className="">
         <View className="mb-8 flex-row items-center justify-between">
           <Text className=" font-fredoka-semibold text-3xl">Create Squad</Text>

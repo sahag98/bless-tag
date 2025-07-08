@@ -36,6 +36,7 @@ const CircleItem = ({ item }: { item: Members }) => {
         style={{
           width: '100%',
           padding: 20,
+          borderWidth: 1,
           justifyContent: 'space-between',
           aspectRatio: 16 / 10,
           borderRadius: 20,
@@ -54,12 +55,12 @@ const CircleItem = ({ item }: { item: Members }) => {
                     width: 45,
                     height: 45,
                     borderRadius: 100,
+                    borderWidth: 1,
                   }}
                   placeholder={{ blurhash }}
                   contentFit="cover"
                   transition={1000}
                   source={{ uri: member.profiles.avatar_url }}
-                  className="size-12 rounded-full"
                 />
               ) : (
                 <View
@@ -67,7 +68,7 @@ const CircleItem = ({ item }: { item: Members }) => {
                     position: 'relative',
                     marginLeft: index > 0 ? -10 : 0,
                   }}
-                  className="size-12 items-center justify-center rounded-full border border-gray-400 bg-card sm:size-11">
+                  className="size-12 items-center justify-center rounded-full border bg-card sm:size-11">
                   <Text className="font-nunito-semibold text-xl uppercase sm:text-base">
                     {member.profiles?.username?.charAt(0)}
                     {member.profiles?.username?.charAt(1)}
@@ -77,7 +78,9 @@ const CircleItem = ({ item }: { item: Members }) => {
             </React.Fragment>
           ))}
           {members?.length! > 4 && (
-            <Text className="ml-1 font-nunito-semibold text-xs sm:text-base">and more</Text>
+            <Text className="ml-1 font-nunito-semibold text-sm text-background sm:text-base">
+              and more
+            </Text>
           )}
         </View>
 

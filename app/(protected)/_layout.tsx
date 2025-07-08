@@ -21,6 +21,7 @@ import CustomThemeProvider from '~/providers/theme-provider';
 import { useAuth } from '~/providers/auth-provider';
 import * as Notifications from 'expo-notifications';
 import { useNotificationObserver } from '~/hooks/useNotificationObserver';
+import { ActivityIndicator, View } from 'react-native';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -68,7 +69,9 @@ export default function ProtectedLayout() {
   }, []);
 
   if (!appIsReady || error) {
-    return null;
+    <View className="flex-1 items-center justify-center bg-background">
+      <ActivityIndicator className="text-primary" size="large" />
+    </View>;
   }
 
   if (!currentUser) {

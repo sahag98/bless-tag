@@ -4,11 +4,15 @@ import { useRouter } from 'expo-router';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { supabase } from '~/utils/supabase';
 import { useAuth } from '~/providers/auth-provider';
+import { useUserStore } from '~/store/store';
+import * as StoreReview from 'expo-store-review';
 
 export default function ScanQRCode() {
   const [permission, requestPermission] = useCameraPermissions();
   const { currentUser } = useAuth();
   const router = useRouter();
+  const { squadsJoined, incrementSquadsJoined, reviewRequested, setReviewRequested } =
+    useUserStore();
 
   const [qrCodeDetected, setQrCodeDetected] = useState<string>('');
   const [joinSquadId, setJoinSquadId] = useState('');
@@ -24,12 +28,12 @@ export default function ScanQRCode() {
       <View className="flex-1 items-center justify-center gap-4 p-4">
         <Image source={require('~/assets/scan.png')} style={{ width: 250, height: 250 }} />
         <Text className="w-4/5 text-center font-nunito-semibold text-lg">
-          We need permission to use the camera and scan the QR Code.
+          We need permission to use the camera and scan the SquadQR Code.
         </Text>
         <Pressable
-          className="w-full items-center justify-center rounded-xl bg-primary p-4"
+          className="w-full items-center justify-center rounded-xl border bg-primary p-4"
           onPress={requestPermission}>
-          <Text className="font-fredoka-semibold text-lg">Grant permission</Text>
+          <Text className="font-fredoka-semibold text-lg">Continue</Text>
         </Pressable>
       </View>
     );
@@ -47,15 +51,17 @@ export default function ScanQRCode() {
       .select();
 
     if (data && !error) {
+      // Increment squads joined count
+      incrementSquadsJoined();
+
+      // Request review after 2nd squad join (when squadsJoined becomes 2)
+      if (squadsJoined === 1 && !reviewRequested && (await StoreReview.isAvailableAsync())) {
+        await StoreReview.requestReview();
+        setReviewRequested(true);
+      }
+
       router.replace(`/squad/${joinSquadId}`);
     }
-    // if (router.canDismiss()) {
-    //   router.dismiss();
-    // }
-    // router.push({
-    //   pathname: '/list/[listId]',
-    //   params: { listId: qrCodeDetected },
-    // });
   };
 
   const handleBarcodeScanned = async (barcodeScanningResult: BarcodeScanningResult) => {
@@ -112,7 +118,7 @@ export default function ScanQRCode() {
               🥳 QR code detected!!!
             </Text>
             <Pressable
-              className="w-full items-center justify-center rounded-xl bg-background p-4"
+              className="w-full items-center justify-center rounded-xl border bg-background p-4"
               onPress={handleConfirmJoinList}>
               <Text className="font-fredoka-semibold text-xl">Join squad</Text>
             </Pressable>

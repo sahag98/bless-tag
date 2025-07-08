@@ -8,6 +8,7 @@ import { Tables } from '~/database.types';
 import { AntDesign, Feather } from '@expo/vector-icons';
 import { useAuth } from '~/providers/auth-provider';
 import { useUserStore } from '../../../../store/store';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const SquadEditScreen = () => {
   const { colorScheme } = useTheme();
@@ -16,6 +17,8 @@ const SquadEditScreen = () => {
   const [newDescription, setNewDescription] = useState(squad?.description);
   const [newName, setNewName] = useState(squad?.name);
   const { fetchSquads } = useUserStore();
+
+  const insets = useSafeAreaInsets();
   async function updateSquadInfo() {
     const { data, error } = await supabase
       .from('squads')
@@ -34,7 +37,9 @@ const SquadEditScreen = () => {
   if (!squad) return;
 
   return (
-    <View className="flex-1 bg-background p-4">
+    <View
+      style={{ paddingTop: Platform.OS === 'android' ? insets.top : 15 }}
+      className="flex-1 bg-background p-4">
       <View className="mb-5 flex-row items-center justify-between">
         <View className="flex-row items-center gap-3">
           {Platform.OS === 'android' && (
@@ -42,7 +47,11 @@ const SquadEditScreen = () => {
               onPress={() => {
                 router.back();
               }}>
-              <AntDesign name="left" size={24} color={colorScheme === 'dark' ? 'white' : 'black'} />
+              <AntDesign
+                name="caretleft"
+                size={24}
+                color={colorScheme === 'dark' ? 'white' : 'black'}
+              />
             </Pressable>
           )}
           <Text className="font-fredoka-semibold text-3xl text-foreground">Edit Squad Info</Text>

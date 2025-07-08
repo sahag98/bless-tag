@@ -18,6 +18,9 @@ const BookIndex = () => {
   const bibleData: Bible = require('~/assets/nkjv.json');
   const { colorScheme } = useTheme();
 
+  const screenWidth = Dimensions.get('screen').width;
+  const isTablet = screenWidth >= 768;
+
   const chapters = bibleData.books.find((book) => book.name === bookName)?.chapters;
   const itemWidth = Dimensions.get('screen').width / 5 - 15;
 
@@ -49,7 +52,9 @@ const BookIndex = () => {
                 `/squad/${id}/verse/${bookName}/${index + 1}?receiverName=${receiverName}&receiverId=${receiverId}&blessedId=${blessedId}&streak=${streak}`
               )
             }
-            style={{ width: itemWidth, aspectRatio: 1 / 1 }}
+            style={
+              isTablet ? { flex: 1, aspectRatio: 1 / 1 } : { width: itemWidth, aspectRatio: 1 / 1 }
+            }
             className="flex-row  items-center justify-center rounded-xl border border-cardborder bg-card">
             <Text className="font-nunito-medium text-lg text-foreground">{index + 1}</Text>
           </Pressable>

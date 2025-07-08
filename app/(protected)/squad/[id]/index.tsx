@@ -1,7 +1,7 @@
 import { useLocalSearchParams, router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Audio } from 'expo-av';
-import { formatDistance, subDays } from 'date-fns';
+import { formatDistance } from 'date-fns';
 import { Alert, FlatList, Image, Modal, Pressable, Text, View } from 'react-native';
 import { useAuth } from '~/providers/auth-provider';
 import {
@@ -127,6 +127,11 @@ export default function Squad() {
   }
 
   async function snoozeBlessed() {
+    Alert.alert(
+      'Snoozed Successfully ✅',
+      `Great job on reminding ${blessedMember?.user.username} to pass the blessing!`,
+      [{ text: 'Got it', onPress: () => console.log('Pressed') }]
+    );
     if (blessedMember) {
       const message = {
         to: blessedMember.user.noti_token,
@@ -277,6 +282,8 @@ export default function Squad() {
     };
   }, [id, blessings?.length]);
 
+  console.log('active: ', activeTab);
+
   if (!squad || !squadMembers) return;
 
   return (
@@ -295,192 +302,192 @@ export default function Squad() {
             <Fontisto name="more-v-a" size={24} color="black" />
           </Pressable>
         </View>
-        <View style={{ height: 400 }}>
-          <LinearGradient
-            style={{
-              width: '100%',
-              padding: 20,
-              justifyContent: 'space-between',
-              flex: 1,
-              borderRadius: 20,
-            }}
-            colors={['#292929', '#929292']}
-            start={{ x: 0, y: 1 }}
-            end={{ x: 1, y: 0 }}>
-            {squad.has_started ? (
-              <View className="flex-1 justify-between ">
-                <View className="flex-row items-center justify-between">
-                  <Text className="font-nunito-medium text-2xl text-background">
-                    Currently Blessed 😇
-                  </Text>
-                  {timeRemaining !== null && currentUser?.id === squad.blessed_id && (
-                    <View className="flex-row items-center gap-2 rounded-xl bg-primary px-2 py-1">
-                      <MaterialCommunityIcons name="timer-outline" size={20} color="#292929" />
-                      <Text className="font-nunito-semibold text-foreground">
-                        {Math.floor(timeRemaining / 3600)}:
-                        {Math.floor((timeRemaining % 3600) / 60)
-                          .toString()
-                          .padStart(2, '0')}
-                        :{(timeRemaining % 60).toString().padStart(2, '0')}
-                      </Text>
-                    </View>
-                  )}
-                </View>
-                <View className="mt-4 items-center gap-3">
-                  <View className="flex-row items-center gap-3">
-                    {blessedMember && (
-                      <>
-                        {blessedMember.user.avatar_url ? (
-                          <Image
-                            source={{ uri: blessedMember.user.avatar_url }}
-                            className="size-14 rounded-full"
-                          />
-                        ) : (
-                          <View className="size-14 items-center justify-center rounded-full bg-background">
-                            <Text className="font-nunito-semibold text-xl uppercase text-primary">
-                              {blessedMember.user?.username?.charAt(0)}
-                              {blessedMember.user?.username?.charAt(1)}
-                            </Text>
-                          </View>
-                        )}
-                      </>
-                    )}
-                    {currentUser?.username === blessedMember?.user.username ? (
-                      <Text className="font-fredoka-semibold text-4xl text-background">
-                        IT'S YOU!!!
-                      </Text>
-                    ) : (
-                      <Text className="font-fredoka-semibold text-4xl text-background">
-                        {blessedMember?.user.username}
-                      </Text>
-                    )}
+
+        <LinearGradient
+          style={{
+            width: '100%',
+            padding: 20,
+            justifyContent: 'space-between',
+            flex: 0.7,
+            borderRadius: 20,
+            borderWidth: 1.5,
+          }}
+          colors={['#292929', '#929292']}
+          start={{ x: 0, y: 1 }}
+          end={{ x: 1, y: 0 }}>
+          {squad.has_started ? (
+            <View className="flex-1 justify-between ">
+              <View className="flex-row items-center justify-between">
+                <Text className="text-center font-nunito-medium text-2xl text-background">
+                  Currently Blessed 😇
+                </Text>
+                {timeRemaining !== null && currentUser?.id === squad.blessed_id && (
+                  <View className="flex-row items-center gap-2 rounded-xl border bg-primary px-2 py-1">
+                    <MaterialCommunityIcons name="timer-outline" size={20} color="#292929" />
+                    <Text className="font-nunito-semibold text-foreground">
+                      {Math.floor(timeRemaining / 3600)}:
+                      {Math.floor((timeRemaining % 3600) / 60)
+                        .toString()
+                        .padStart(2, '0')}
+                      :{(timeRemaining % 60).toString().padStart(2, '0')}
+                    </Text>
                   </View>
-                  <AntDesign name="caretdown" size={24} color="#ffac27" />
-                  <View className="flex-row items-center gap-4">
+                )}
+              </View>
+              <View className="items-center gap-2 ">
+                <View className="flex-row items-center gap-2">
+                  {blessedMember && (
                     <>
-                      {blessedMember?.receiver.avatar_url ? (
+                      {blessedMember.user.avatar_url ? (
                         <Image
-                          source={{ uri: blessedMember.receiver.avatar_url }}
-                          className="size-14 rounded-full"
+                          source={{ uri: blessedMember.user.avatar_url }}
+                          className="size-14 rounded-full border-2"
                         />
                       ) : (
-                        <View className="size-14 items-center justify-center rounded-full bg-background">
+                        <View className="size-14 items-center justify-center rounded-full border-2 bg-background">
                           <Text className="font-nunito-semibold text-xl uppercase text-primary">
-                            {blessedMember?.receiver?.username?.charAt(0)}
-                            {blessedMember?.receiver?.username?.charAt(1)}
+                            {blessedMember.user?.username?.charAt(0)}
+                            {blessedMember.user?.username?.charAt(1)}
                           </Text>
                         </View>
                       )}
                     </>
-                    <Text className="mt-2 font-fredoka-semibold text-4xl text-background">
-                      {blessedMember?.receiver.username}
+                  )}
+                  {currentUser?.username === blessedMember?.user.username ? (
+                    <Text className="font-fredoka-semibold text-4xl text-background">
+                      IT'S YOU!!!
                     </Text>
-                  </View>
+                  ) : (
+                    <Text className="font-fredoka-semibold text-4xl text-background">
+                      {blessedMember?.user.username}
+                    </Text>
+                  )}
                 </View>
-                {blessedMember?.user_id === currentUser?.id ? (
-                  <Pressable
-                    onPress={() => setIsPassing(true)}
-                    className="w-full items-center justify-center rounded-xl bg-primary p-3">
-                    <View className="flex-row items-center gap-2">
-                      <Text className="font-fredoka-semibold text-2xl text-foreground">
-                        Pass The Blessing
-                      </Text>
-                    </View>
-                  </Pressable>
-                ) : (
-                  <View className="w-full flex-row items-center gap-5">
-                    <Pressable
-                      onPress={snoozeBlessed}
-                      className="flex-1 flex-row items-center justify-center gap-3 rounded-2xl border border-primary p-3">
-                      <MaterialCommunityIcons name="hand-wave-outline" size={24} color="#ffac27" />
-                      <Text className="font-nunito-bold text-lg text-primary">Snooze</Text>
-                    </Pressable>
-                    <Pressable className="flex-1 flex-row items-center justify-center gap-3 rounded-2xl border border-primary bg-primary p-3">
-                      <MaterialCommunityIcons name="timer-outline" size={24} color="#292929" />
-                      <Text className="font-nunito-bold text-lg text-secondary">
-                        {timeRemaining !== null && (
-                          <Text className="font-nunito-bold text-lg text-foreground">
-                            {Math.floor(timeRemaining / 3600)}:
-                            {Math.floor((timeRemaining % 3600) / 60)
-                              .toString()
-                              .padStart(2, '0')}
-                            :{(timeRemaining % 60).toString().padStart(2, '0')}
-                          </Text>
-                        )}
-                      </Text>
-                    </Pressable>
+                <AntDesign name="caretdown" size={24} color="#ffac27" />
+                <View className="flex-row items-center gap-2 ">
+                  <>
+                    {blessedMember?.receiver.avatar_url ? (
+                      <Image
+                        source={{ uri: blessedMember.receiver.avatar_url }}
+                        className="size-14 rounded-full border-2"
+                      />
+                    ) : (
+                      <View className="size-14 items-center justify-center rounded-full border-2 bg-background">
+                        <Text className="font-nunito-semibold text-xl uppercase text-primary">
+                          {blessedMember?.receiver?.username?.charAt(0)}
+                          {blessedMember?.receiver?.username?.charAt(1)}
+                        </Text>
+                      </View>
+                    )}
+                  </>
+                  <Text className="font-fredoka-semibold text-4xl text-background">
+                    {blessedMember?.receiver.username}
+                  </Text>
+                </View>
+              </View>
+              {blessedMember?.user_id === currentUser?.id ? (
+                <Pressable
+                  onPress={() => setIsPassing(true)}
+                  className="w-full items-center justify-center rounded-xl border bg-primary p-3">
+                  <View className="flex-row items-center gap-2">
+                    <Text className="font-fredoka-semibold text-2xl text-foreground">
+                      Pass The Blessing
+                    </Text>
                   </View>
-                )}
-              </View>
-            ) : (
-              <View className="flex-1 items-center justify-between">
-                {squad.has_ended ? (
-                  <>
-                    <Text className="font-fredoka-semibold text-4xl text-primary">Game Over</Text>
-                    <View className="items-center gap-2">
-                      {squad.loser?.avatar_url ? (
-                        <Image
-                          source={{ uri: squad.loser?.avatar_url }}
-                          className="size-20 rounded-full"
-                        />
-                      ) : (
-                        <View className="flex-row">
-                          <Text className="font-nunito-semibold text-xl uppercase sm:text-base">
-                            {squad.loser?.username?.charAt(0)}
-                            {squad.loser?.username?.charAt(1)}
-                          </Text>
-                        </View>
+                </Pressable>
+              ) : (
+                <View className="w-full flex-row items-center gap-5">
+                  <Pressable
+                    onPress={snoozeBlessed}
+                    className="flex-1 flex-row items-center justify-center gap-3 rounded-2xl border border-primary p-3">
+                    <MaterialCommunityIcons name="hand-wave-outline" size={24} color="#ffac27" />
+                    <Text className="font-nunito-bold text-lg text-primary">Snooze</Text>
+                  </Pressable>
+                  <Pressable className="flex-1 flex-row items-center justify-center gap-3 rounded-2xl border bg-primary p-3">
+                    <MaterialCommunityIcons name="timer-outline" size={24} color="#292929" />
+                    <Text className="font-nunito-bold text-lg text-secondary">
+                      {timeRemaining !== null && (
+                        <Text className="font-nunito-bold text-lg text-foreground">
+                          {Math.floor(timeRemaining / 3600)}:
+                          {Math.floor((timeRemaining % 3600) / 60)
+                            .toString()
+                            .padStart(2, '0')}
+                          :{(timeRemaining % 60).toString().padStart(2, '0')}
+                        </Text>
                       )}
-                      <Text className="mt-2 font-nunito-semibold text-2xl text-background">
-                        <Text className="font-fredoka-semibold">
-                          {currentUser?.username === squad.loser?.username
-                            ? 'You'
-                            : squad.loser?.username}
-                        </Text>{' '}
-                        didn't pass the blessing.
-                      </Text>
-                    </View>
-                    <Text className="mt-2 font-nunito-semibold text-xl text-background">
-                      {currentUser?.id === squad.admin_id
-                        ? 'Time to decide a consequence!'
-                        : 'Waiting for leader to decide a consequence.'}
                     </Text>
-                    {currentUser?.id === squad.admin_id && (
-                      <Pressable
-                        onPress={() => setIsDeciding(true)}
-                        className="w-full flex-row items-center justify-center gap-4 self-end rounded-xl bg-primary p-4">
-                        <Text className="font-fredoka-semibold text-xl">Decide</Text>
-                      </Pressable>
+                  </Pressable>
+                </View>
+              )}
+            </View>
+          ) : (
+            <View className="flex-1 items-center justify-between">
+              {squad.has_ended ? (
+                <>
+                  <Text className="font-fredoka-semibold text-4xl text-primary">Game Over</Text>
+                  <View className="items-center gap-2">
+                    {squad.loser?.avatar_url ? (
+                      <Image
+                        source={{ uri: squad.loser?.avatar_url }}
+                        className="size-20 rounded-full border"
+                      />
+                    ) : (
+                      <View className="size-20 flex-row rounded-full border bg-background">
+                        <Text className="font-nunito-semibold text-xl uppercase sm:text-base">
+                          {squad.loser?.username?.charAt(0)}
+                          {squad.loser?.username?.charAt(1)}
+                        </Text>
+                      </View>
                     )}
-                  </>
-                ) : (
-                  <>
-                    <Text className="font-fredoka-semibold text-4xl text-primary">
-                      Game {squad.has_ended ? 'Over' : `not Started`}
+                    <Text className=" font-nunito-semibold text-2xl text-background">
+                      <Text className="font-fredoka-semibold">
+                        {currentUser?.username === squad.loser?.username
+                          ? 'You'
+                          : squad.loser?.username}
+                      </Text>{' '}
+                      didn't pass the blessing.
                     </Text>
-                    <Text className="mt-2 font-nunito-semibold text-xl text-background">
-                      {currentUser?.id === squad.admin_id
-                        ? 'Ready when you are, press start to begin!'
-                        : 'Hang tight! It will begin soon.'}
-                    </Text>
-                    {squadMembers.length === 1 && (
-                      <Text className="font-nunito-medium text-lg text-background">
-                        Invite users to get started!
-                      </Text>
-                    )}
+                  </View>
+                  <Text className="font-nunito-semibold text-xl text-background">
+                    {currentUser?.id === squad.admin_id
+                      ? 'Time to decide a consequence!'
+                      : 'Waiting for leader to decide a consequence.'}
+                  </Text>
+                  {currentUser?.id === squad.admin_id && (
                     <Pressable
-                      onPress={() => router.push(`/squad/${id}/rules`)}
-                      className="w-full flex-row items-center justify-between gap-4 self-end rounded-xl bg-background p-4">
-                      <Text className="font-nunito-semibold text-xl">Rules</Text>
-
-                      <AntDesign name="questioncircleo" size={24} color="black" />
+                      onPress={() => setIsDeciding(true)}
+                      className="w-full flex-row items-center justify-center gap-4 self-end rounded-xl bg-primary p-4">
+                      <Text className="font-fredoka-semibold text-xl">Decide</Text>
                     </Pressable>
-                  </>
-                )}
-              </View>
-            )}
-          </LinearGradient>
-        </View>
+                  )}
+                </>
+              ) : (
+                <>
+                  <Text className="font-fredoka-semibold text-4xl text-primary">
+                    Game {squad.has_ended ? 'Over' : `not Started`}
+                  </Text>
+                  <Text className="text-center font-nunito-semibold text-xl text-background">
+                    {currentUser?.id === squad.admin_id
+                      ? 'Ready when you are, press start to begin!'
+                      : 'Hang tight! It will begin soon.'}
+                  </Text>
+                  {squadMembers.length === 1 && (
+                    <Text className="font-nunito-medium text-lg text-background">
+                      Invite users to get started!
+                    </Text>
+                  )}
+                  <Pressable
+                    onPress={() => router.push(`/squad/${id}/rules`)}
+                    className="w-full flex-row items-center justify-between gap-4 self-end rounded-xl border bg-background p-4">
+                    <Text className="font-nunito-semibold text-xl">Rules</Text>
+
+                    <AntDesign name="questioncircleo" size={24} color="black" />
+                  </Pressable>
+                </>
+              )}
+            </View>
+          )}
+        </LinearGradient>
 
         <View className="flex-1">
           {!squad.has_started ? (
@@ -505,8 +512,8 @@ export default function Squad() {
                     }}
                     className={
                       squad.has_ended || squadMembers.length <= 1
-                        ? 'flex-1 flex-row items-center justify-center gap-4 rounded-xl bg-primary p-4 opacity-30'
-                        : 'flex-1 flex-row items-center justify-center gap-4 rounded-xl bg-primary p-4'
+                        ? 'flex-1 flex-row items-center justify-center gap-4 rounded-xl border bg-primary p-4 opacity-30'
+                        : 'flex-1 flex-row items-center justify-center gap-4 rounded-xl border bg-primary p-4'
                     }>
                     <Text className="font-nunito-bold text-lg">START</Text>
                     <FontAwesome name="play" size={24} color="black" />
@@ -514,19 +521,19 @@ export default function Squad() {
                 )}
                 <Pressable
                   onPress={() => router.push(`/squad/${id}/invite?code=${squad.code}`)}
-                  className="flex-1 flex-row items-center justify-center gap-4 rounded-xl bg-card p-4">
+                  className="flex-1 flex-row items-center justify-center gap-4 rounded-xl border bg-card p-4">
                   <Text className="font-nunito-bold text-lg">INVITE</Text>
                   <AntDesign name="adduser" size={24} color="black" />
                 </Pressable>
               </View>
               {activeTab === 'users' ? (
-                <View className="mt-4  gap-4">
+                <View className="mt-4 gap-4">
                   <View className={'flex-row items-center justify-center gap-3'}>
                     <Pressable
                       onPress={() => setActiveTab('users')}
                       className={
                         activeTab === 'users'
-                          ? 'flex-1 flex-row items-center justify-center gap-4 rounded-xl bg-card p-2'
+                          ? 'flex-1 flex-row items-center justify-center gap-4 rounded-xl border bg-card p-2'
                           : 'flex-1 flex-row items-center justify-center gap-4 p-2'
                       }>
                       <Text className="font-fredoka-medium text-2xl">Users</Text>
@@ -536,24 +543,23 @@ export default function Squad() {
                     <Pressable
                       onPress={() => setActiveTab('losers')}
                       className={
-                        (activeTab as 'users' | 'losers') === 'losers'
+                        (activeTab as 'losers' | 'users') === 'losers'
                           ? 'flex-1 flex-row items-center justify-center gap-4 rounded-xl bg-card p-2'
-                          : 'flex-1 flex-row items-center justify-center gap-4 p-2'
+                          : 'flex-1 flex-row items-center  justify-center gap-4 p-2'
                       }>
                       <Text className="font-fredoka-medium text-2xl">Losers</Text>
-                      {/* <Feather name="user-check" size={24} color="black" /> */}
                     </Pressable>
                   </View>
                   <View className="flex-row flex-wrap items-center gap-3">
                     {squadMembers?.map((member) => (
                       <View
-                        className="size-16 items-center justify-center rounded-full bg-card"
+                        className="size-16 items-center justify-center rounded-full border bg-card"
                         key={member.id}>
                         {member.profiles.avatar_url ? (
                           <Image
                             key={member.user_id}
                             source={{ uri: member.profiles.avatar_url }}
-                            className="size-16 rounded-full"
+                            className="size-16 rounded-full border"
                           />
                         ) : (
                           <View className="flex-row">
@@ -585,7 +591,7 @@ export default function Squad() {
                       onPress={() => setActiveTab('losers')}
                       className={
                         (activeTab as 'users' | 'losers') === 'losers'
-                          ? 'flex-1 flex-row items-center justify-center gap-4 rounded-xl bg-card p-2'
+                          ? 'flex-1 flex-row items-center justify-center gap-4 rounded-xl border bg-card p-2'
                           : 'flex-1 flex-row items-center justify-center gap-4 p-2'
                       }>
                       <Text className="font-fredoka-medium text-2xl">Losers</Text>
@@ -606,10 +612,10 @@ export default function Squad() {
                         {item.profiles?.avatar_url ? (
                           <Image
                             source={{ uri: item.profiles?.avatar_url }}
-                            className="size-12 rounded-full"
+                            className="size-12 rounded-full border"
                           />
                         ) : (
-                          <View className="flex-row">
+                          <View className="size-12 flex-row items-center justify-center rounded-full border bg-background">
                             <Text className="font-nunito-semibold text-lg uppercase sm:text-base">
                               {item.profiles?.username?.charAt(0)}
                               {item.profiles?.username?.charAt(1)}
@@ -663,15 +669,15 @@ export default function Squad() {
                 contentContainerStyle={{ flexGrow: 1, gap: 10 }}
                 data={squadBlessings?.filter((blessing) => blessing.message !== null)}
                 renderItem={({ item }) => (
-                  <View className="flex-row items-center gap-4 rounded-xl border border-cardborder bg-card p-2">
+                  <View className="flex-row items-center gap-4 rounded-xl border bg-card p-2">
                     <View className="items-center gap-2">
                       {item?.user?.avatar_url ? (
                         <Image
                           source={{ uri: item.user?.avatar_url! }}
-                          className="size-12 rounded-full"
+                          className="size-12 rounded-full border"
                         />
                       ) : (
-                        <View className="flex-row">
+                        <View className="size-12 flex-row items-center justify-center rounded-full border bg-background">
                           <Text className="font-nunito-semibold text-xl uppercase sm:text-base">
                             {item.user?.username?.charAt(0)}
                             {item.user?.username?.charAt(1)}
@@ -680,7 +686,7 @@ export default function Squad() {
                       )}
                       <Text className="font-nunito-semibold text-sm">Sender</Text>
                     </View>
-                    <View className="h-full flex-1 self-start rounded-2xl bg-background  p-3">
+                    <View className="h-full flex-1 self-start rounded-2xl border bg-background  p-3">
                       {item.message ? (
                         <View className="gap-4">
                           <Text className="font-nunito-medium text-sm">{item.message}</Text>
@@ -700,11 +706,11 @@ export default function Squad() {
                       {item?.receiver?.avatar_url ? (
                         <Image
                           source={{ uri: item.receiver?.avatar_url! }}
-                          className="size-12 rounded-full"
+                          className="size-12 rounded-full border"
                         />
                       ) : (
-                        <View className="flex-row">
-                          <Text className="font-nunito-semibold text-xl uppercase sm:text-base">
+                        <View className="size-12 flex-row items-center justify-center rounded-full border bg-background">
+                          <Text className=" font-nunito-semibold text-xl uppercase sm:text-base">
                             {item.receiver?.username?.charAt(0)}
                             {item.receiver?.username?.charAt(1)}
                           </Text>
@@ -1131,7 +1137,10 @@ const EndModal = ({
           end={{ x: 1, y: 0 }}>
           <Pressable
             className="absolute right-4 top-4 items-center justify-center rounded-full bg-primary"
-            onPress={() => setIsEnding(false)}>
+            onPress={() => {
+              router.replace(`/(protected)`);
+              setIsEnding(false);
+            }}>
             <AntDesign name="closecircle" size={40} color="black" />
           </Pressable>
           <Text className="font-fredoka-semibold text-5xl text-primary">Game Over...</Text>

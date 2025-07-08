@@ -1,4 +1,4 @@
-import { StyleSheet, Text, ScrollView, View } from 'react-native';
+import { StyleSheet, Text, ScrollView, View, Platform } from 'react-native';
 import React from 'react';
 import { Container } from '~/components/Container';
 import QRCode from 'react-native-qrcode-svg';
@@ -9,16 +9,21 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const SquadInvite = () => {
   const { id } = useLocalSearchParams();
+
+  const insets = useSafeAreaInsets();
   return (
-    <View className="flex-1 p-2.5">
-      <View className="flex-1 items-center gap-5">
+    <View
+      style={{ paddingTop: Platform.OS === 'android' ? insets.top : 15 }}
+      className="flex-1 p-2">
+      <View className="items-center gap-5">
         <Text className="font-fredoka-semibold text-3xl">Game Rules 🚩</Text>
-        <ScrollView className="rounded-xl bg-card p-2" showsVerticalScrollIndicator={false}>
+        <ScrollView className="rounded-xl p-2" showsVerticalScrollIndicator={false}>
           <View className="gap-2">
-            <View className="items-start gap-3 rounded-xl bg-background p-3 shadow-stone-200">
+            <View className="items-start gap-3 rounded-xl border bg-background p-3 shadow-stone-200">
               <View className="flex-row items-center gap-3">
                 <View className="size-12 items-center justify-center rounded-full bg-primary">
                   <Text className="font-fredoka-semibold text-xl">1</Text>
@@ -31,7 +36,7 @@ const SquadInvite = () => {
                 </Text>
               </View>
             </View>
-            <View className="items-start gap-3 rounded-xl bg-background p-3 shadow-stone-200">
+            <View className="items-start gap-3 rounded-xl border bg-background p-3 shadow-stone-200">
               <View className="flex-row items-center gap-3">
                 <View className="size-12 items-center justify-center rounded-full bg-primary">
                   <Text className="font-fredoka-semibold text-xl">2</Text>
@@ -44,7 +49,7 @@ const SquadInvite = () => {
                 </Text>
               </View>
             </View>
-            <View className="items-start gap-3 rounded-xl bg-background p-3 shadow-stone-200">
+            <View className="items-start gap-3 rounded-xl border bg-background p-3 shadow-stone-200">
               <View className="flex-row items-center gap-3">
                 <View className="size-12 items-center justify-center rounded-full bg-primary">
                   <Text className="font-fredoka-semibold text-xl">3</Text>
@@ -75,7 +80,7 @@ const SquadInvite = () => {
                 This will continue until someone forgets to pass the "blessing".
               </Text>
             </View>
-            <View className="items-start gap-3 rounded-xl bg-background p-3 shadow-stone-200">
+            <View className="items-start gap-3 rounded-xl border bg-background p-3 shadow-stone-200">
               <View className="flex-row items-center gap-3">
                 <View className="size-12 items-center justify-center rounded-full bg-primary">
                   <Text className="font-fredoka-semibold text-xl">4</Text>
